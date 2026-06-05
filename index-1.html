@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relansa — Suivi & Relances de Factures pour Professions Libérales</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #2d1535;
+    --navy-light: #4a1f5a;
+    --gold: #d4317a;
+    --gold-light: #e86fa8;
+    --cream: #fdf6f9;
+    --cream-dark: #f7eaf2;
+    --text: #2c2c2c;
+    --text-light: #6b6b6b;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15,31,61,0.97);
+    backdrop-filter: blur(12px);
+    padding: 18px 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.5px;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  nav a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 14px; font-weight: 500;
+    margin-left: 32px;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: var(--gold) !important;
+    color: var(--navy) !important;
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-weight: 600 !important;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--navy);
+    display: flex; align-items: center;
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--cream));
+  }
+
+  .hero-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 7px 16px; border-radius: 20px;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 17px; line-height: 1.7;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 14px 28px; border-radius: 8px;
+    font-weight: 700; font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+  }
+
+  .btn-secondary {
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.85);
+    padding: 14px 28px; border-radius: 8px;
+    font-weight: 500; font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* STATS CARD */
+  .hero-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 28px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+  }
+
+  .stat-item {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-item:first-child { padding-top: 0; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 13px; color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+  }
+
+  .stat-source {
+    font-size: 10px; color: rgba(255,255,255,0.3);
+    margin-top: 4px;
+  }
+
+  /* SECTION BASE */
+  section { padding: 100px 5%; }
+
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 17px; color: var(--text-light);
+    line-height: 1.7; max-width: 560px;
+    font-weight: 300;
+  }
+
+  /* PROBLEME */
+  #probleme { background: var(--cream); }
+
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .problem-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .problem-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  }
+
+  .problem-icon {
+    width: 48px; height: 48px;
+    background: rgba(15,31,61,0.06);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .problem-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .problem-card p {
+    font-size: 14px; color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  /* OFFRE */
+  #offre { background: var(--navy); }
+
+  #offre .section-title { color: var(--white); }
+  #offre .section-sub { color: rgba(255,255,255,0.55); }
+
+  .forfaits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .forfait-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 36px 32px;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .forfait-card:hover { transform: translateY(-4px); }
+
+  .forfait-card.featured {
+    background: var(--white);
+    border-color: var(--gold);
+    border-width: 2px;
+  }
+
+  .forfait-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 5px 16px; border-radius: 20px;
+  }
+
+  .forfait-name {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .forfait-card.featured .forfait-name { color: var(--navy); }
+
+  .forfait-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px; font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .forfait-card.featured .forfait-price { color: var(--navy); }
+
+  .forfait-period {
+    font-size: 13px; color: rgba(255,255,255,0.4);
+    margin-bottom: 28px;
+  }
+
+  .forfait-card.featured .forfait-period { color: var(--text-light); }
+
+  .forfait-features {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+
+  .forfait-features li {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: flex-start; gap: 10px;
+    line-height: 1.4;
+  }
+
+  .forfait-card.featured .forfait-features li {
+    color: var(--text);
+    border-color: rgba(0,0,0,0.06);
+  }
+
+  .forfait-features li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .forfait-btn {
+    display: block; width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 700; font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+  }
+
+  .forfait-card.featured .forfait-btn {
+    background: var(--navy);
+    color: var(--white);
+    border-color: transparent;
+  }
+
+  .forfait-btn:hover {
+    background: var(--gold);
+    color: var(--navy);
+    border-color: var(--gold);
+  }
+
+  /* PROCESSUS */
+  #processus { background: var(--cream-dark); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 36px; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-num {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 3px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; font-weight: 700;
+    color: var(--gold);
+    margin: 0 auto 24px;
+    position: relative; z-index: 1;
+  }
+
+  .step h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .step p {
+    font-size: 13px; color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  /* POUR QUI */
+  #pourqui { background: var(--white); }
+
+  .professions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 50px;
+  }
+
+  .profession-pill {
+    background: var(--cream);
+    border: 1px solid rgba(15,31,61,0.1);
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .profession-pill:hover {
+    background: var(--navy);
+    border-color: var(--navy);
+    transform: translateY(-2px);
+  }
+
+  .profession-pill:hover .prof-icon,
+  .profession-pill:hover .prof-name { color: var(--white); }
+
+  .prof-icon { font-size: 28px; margin-bottom: 10px; }
+
+  .prof-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+
+  /* CTA */
+  #contact {
+    background: var(--navy);
+    text-align: center;
+    padding: 120px 5%;
+  }
+
+  #contact .section-title { color: var(--white); margin-bottom: 16px; }
+
+  #contact p {
+    font-size: 17px; color: rgba(255,255,255,0.55);
+    margin-bottom: 48px; font-weight: 300;
+  }
+
+  .contact-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 24px;
+    padding: 48px;
+    max-width: 560px; margin: 0 auto;
+  }
+
+  .contact-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    text-align: left;
+  }
+
+  .contact-item:last-child { border-bottom: none; }
+
+  .contact-icon {
+    width: 44px; height: 44px;
+    background: rgba(201,168,76,0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .contact-value {
+    font-size: 16px; font-weight: 600;
+    color: var(--white);
+  }
+
+  .contact-value a { color: var(--gold); text-decoration: none; }
+
+  /* FOOTER */
+  footer {
+    background: #070f1e;
+    padding: 32px 5%;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  footer p {
+    font-size: 13px; color: rgba(255,255,255,0.25);
+  }
+
+  footer .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+
+  footer .footer-logo span { color: var(--gold); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 50px; }
+    .forfaits-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .steps { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+    .steps::before { display: none; }
+    nav .nav-links { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    section { padding: 70px 5%; }
+    .steps { grid-template-columns: 1fr; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-content > * {
+    animation: fadeUp 0.7s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+  .hero-content > *:nth-child(2) { animation-delay: 0.2s; }
+  .hero-content > *:nth-child(3) { animation-delay: 0.35s; }
+  .hero-content > *:nth-child(4) { animation-delay: 0.5s; }
+
+  .hero-card {
+    animation: fadeUp 0.7s 0.4s ease forwards;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Rel<span>ansa</span></div>
+  <div class="nav-links">
+    <a href="#probleme">Le problème</a>
+    <a href="#offre">Nos forfaits</a>
+    <a href="#processus">Comment ça marche</a>
+    <a href="#pourqui">Pour qui</a>
+    <a href="#contact" class="nav-cta">Nous contacter</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-tag">Appui administratif · Professions libérales · France</div>
+      <h1>Vos factures suivies.<br>Vos relances <em>apaisées</em>.<br>Votre temps retrouvé.</h1>
+      <p class="hero-sub">
+        Relansa crée vos factures, suit vos impayés et relance vos débiteurs jusqu'à l'injonction de payer — pour que vous vous concentriez sur votre métier.
+      </p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">Nous contacter</a>
+        <a href="#offre" class="btn-secondary">Voir les forfaits</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="stat-item">
+        <div class="stat-num">50%</div>
+        <div class="stat-label">des professionnels libéraux renoncent à recouvrer leurs impayés faute de temps</div>
+        <div class="stat-source">Source : Avozono, 2024</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">15h</div>
+        <div class="stat-label">par semaine consacrées à des tâches administratives répétitives en moyenne</div>
+        <div class="stat-source">Source : CNB, 2024</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">900€</div>
+        <div class="stat-label">de temps facturable perdu chaque mois à gérer soi-même ses relances</div>
+        <div class="stat-source">Calcul : 150 €/h × 6h de suivi mensuel</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLÈME -->
+<section id="probleme">
+  <div class="section-inner">
+    <div class="section-tag">Le constat</div>
+    <h2 class="section-title">Ce que vous perdez<br>chaque mois sans le savoir</h2>
+    <p class="section-sub">Les professions libérales n'ont pas été formées à la gestion administrative. Résultat : du temps gaspillé, des factures oubliées, du stress évitable.</p>
+
+    <div class="problems-grid">
+      <div class="problem-card">
+        <div class="problem-icon">⏱</div>
+        <h3>Du temps perdu</h3>
+        <p>Relancer un client non payeur prend du temps, de l'énergie et de la concentration que vous n'avez pas. Ces heures ne sont pas facturées.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">💸</div>
+        <h3>De l'argent immobilisé</h3>
+        <p>Une facture non relancée dans les 72h après échéance a 40% de risque supplémentaire de ne jamais être payée dans les délais.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">😓</div>
+        <h3>Une relation inconfortable</h3>
+        <p>Relancer soi-même ses patients ou clients met mal à l'aise. Un tiers neutre et professionnel le fait mieux — et préserve la relation.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">📋</div>
+        <h3>Aucune visibilité</h3>
+        <p>Sans tableau de bord, impossible de savoir exactement ce qui est payé, en attente ou à escalader. L'information se perd dans les emails.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRE -->
+<section id="offre">
+  <div class="section-inner">
+    <div class="section-tag">Nos forfaits</div>
+    <h2 class="section-title" style="color:white">Une offre claire,<br>sans surprise</h2>
+    <p class="section-sub">Engagement 3 mois, puis mensuel. Confidentiel. Conforme RGPD.</p>
+
+    <div class="forfaits-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 780px; margin-left: auto; margin-right: auto;">
+      <!-- ESSENTIEL -->
+      <div class="forfait-card">
+        <div class="forfait-name">Essentiel</div>
+        <div class="forfait-price">190€</div>
+        <div class="forfait-period">/ mois HT · jusqu'à 15 dossiers</div>
+        <ul class="forfait-features">
+          <li>Suivi des factures impayées</li>
+          <li>Relances email R1, R2, R3</li>
+          <li>Rapport mensuel</li>
+          <li>Contrat + RGPD inclus</li>
+        </ul>
+        <a href="#contact" class="forfait-btn">Choisir ce forfait</a>
+      </div>
+
+      <!-- INTENSIF -->
+      <div class="forfait-card featured">
+        <div class="forfait-badge">Le plus complet</div>
+        <div class="forfait-name">Intensif</div>
+        <div class="forfait-price">390€</div>
+        <div class="forfait-period">/ mois HT · dossiers illimités</div>
+        <ul class="forfait-features">
+          <li>Tout le forfait Essentiel</li>
+          <li>Relances téléphoniques</li>
+          <li>Courrier recommandé avec AR après 3 relances*</li>
+          <li>Mise en demeure amiable rédigée</li>
+          <li>Accompagnement injonction de payer</li>
+          <li>Rapport hebdomadaire</li>
+          <li>Traitement prioritaire</li>
+          <li>Contrat + RGPD inclus</li>
+        </ul>
+        <p style="font-size:11px; color:#888; margin-top:8px;">* Frais postaux refacturés au coût réel sur justificatif</p>
+        <a href="#contact" class="forfait-btn">Choisir ce forfait</a>
+      </div>
+    </div>
+
+    <!-- OPTION FACTURATION -->
+    <div style="max-width: 780px; margin: 24px auto 0; background: rgba(255,255,255,0.06); border: 1px dashed rgba(212,49,122,0.4); border-radius: 16px; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #d4317a; margin-bottom: 8px;">Option disponible</div>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: white; margin-bottom: 6px;">Option Facturation — +90€/mois</div>
+        <div style="font-size: 14px; color: rgba(255,255,255,0.6);">Création et envoi de vos factures inclus · À ajouter sur l'un ou l'autre forfait</div>
+      </div>
+      <a href="#contact" style="background: #d4317a; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; white-space: nowrap;">Ajouter cette option</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESSUS -->
+<section id="processus">
+  <div class="section-inner">
+    <div class="section-tag">Comment ça marche</div>
+    <h2 class="section-title">Opérationnel en 5 jours</h2>
+    <p class="section-sub">Pas de formation. Pas d'installation. Vous transmettez, nous gérons.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Audit gratuit</h3>
+        <p>Un premier échange pour comprendre votre situation et voir si nous pouvons vous aider.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Contrat & RGPD</h3>
+        <p>Signature du contrat de prestation et de l'accord de confidentialité. Tout est cadré dès le départ.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Transmission</h3>
+        <p>Vous nous partagez votre liste de factures en attente. On valide ensemble les modèles de relance.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>On s'occupe du reste</h3>
+        <p>Relances, suivi, tableau de bord. Vous recevez votre rapport le 1er de chaque mois.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- QUI SUIS-JE -->
+<section style="background: #fdf6f9; padding: 70px 5%;">
+  <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 60px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 280px;">
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #d4317a; margin-bottom: 14px;">Qui sommes-nous</div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: #2d1535; margin-bottom: 18px; line-height: 1.2;">Relansa, votre partenaire recouvrement.</h2>
+      <p style="font-size: 16px; color: #6b6b6b; line-height: 1.8; font-weight: 300; margin-bottom: 16px;">
+        Nous accompagnons les professionnels et entreprises qui n'ont plus le temps de courir après leurs impayés. Notre rôle : prendre en charge ce qui vous épuise administrativement, avec rigueur et discrétion.
+      </p>
+      <p style="font-size: 16px; color: #6b6b6b; line-height: 1.8; font-weight: 300; margin-bottom: 16px;">
+        Nous travaillons en toute confidentialité, dans le respect des obligations propres à chaque secteur d'activité.
+      </p>
+      <p style="font-size: 14px; color: #d4317a; font-weight: 600;">Souade — Fondatrice de Relansa</p>
+    </div>
+    <div style="flex: 1; min-width: 280px;">
+
+    </div>
+  </div>
+</section>
+
+<!-- POUR QUI -->
+<section id="pourqui">
+  <div class="section-inner">
+    <div class="section-tag">Pour qui</div>
+    <h2 class="section-title">Conçu pour tous ceux<br>qui veulent être payés</h2>
+    <p class="section-sub">Professions libérales, TPE, PME, indépendants — si vous avez des factures impayées, Relansa est fait pour vous.</p>
+
+    <div class="professions-grid">
+      <div class="profession-pill">
+        <div class="prof-icon">⚖️</div>
+        <div class="prof-name">Avocats & Juristes</div>
+      </div>
+      <div class="profession-pill">
+        <div class="prof-icon">🧠</div>
+        <div class="prof-name">Neuropsychologues & Psychologues</div>
+      </div>
+      <div class="profession-pill">
+        <div class="prof-icon">🩺</div>
+        <div class="prof-name">Médecins & Paramédicaux</div>
+      </div>
+      <div class="profession-pill">
+        <div class="prof-icon">👶</div>
+        <div class="prof-name">Sages-femmes</div>
+      </div>
+      <div class="profession-pill">
+        <div class="prof-icon">💼</div>
+        <div class="prof-name">TPE & Indépendants</div>
+      </div>
+      <div class="profession-pill">
+        <div class="prof-icon">🏢</div>
+        <div class="prof-name">Entreprises</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FAQ -->
+<section style="background: white; padding: 80px 5%;">
+  <div style="max-width: 700px; margin: 0 auto;">
+    <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #d4317a; margin-bottom: 14px; text-align:center;">Questions fréquentes</div>
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: #2d1535; margin-bottom: 48px; text-align:center; line-height:1.2;">Ce que vous vous demandez<br>avant de nous contacter</h2>
+
+    <div style="margin-bottom: 28px; padding: 28px; background: #fdf6f9; border-radius: 16px;">
+      <div style="font-weight: 700; color: #2d1535; font-size: 16px; margin-bottom: 10px;">Avez-vous accès à mes dossiers clients ou patients ?</div>
+      <div style="color: #6b6b6b; font-size: 15px; line-height: 1.7;">Non. Nous n'accédons qu'aux informations strictement nécessaires : numéro de facture, montant, contact de facturation. Aucune donnée médicale ou confidentielle n'est transmise. Un accord RGPD est signé avant tout démarrage.</div>
+    </div>
+
+    <div style="margin-bottom: 28px; padding: 28px; background: #fdf6f9; border-radius: 16px;">
+      <div style="font-weight: 700; color: #2d1535; font-size: 16px; margin-bottom: 10px;">Et si je veux arrêter ?</div>
+      <div style="color: #6b6b6b; font-size: 15px; line-height: 1.7;">L'engagement initial est de 3 mois, puis mensuel. Vous pouvez arrêter à tout moment avec un préavis de 30 jours. Sans pénalité, sans justification.</div>
+    </div>
+
+    <div style="padding: 28px; background: #fdf6f9; border-radius: 16px;">
+      <div style="font-weight: 700; color: #2d1535; font-size: 16px; margin-bottom: 10px;">Comment se passe la première semaine ?</div>
+      <div style="color: #6b6b6b; font-size: 15px; line-height: 1.7;">Un premier échange de 30 minutes pour comprendre votre fonctionnement. Vous me transmettez votre liste de factures en attente. On valide ensemble les modèles de relance. Dès la semaine suivante, je prends le relais.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-tag">Contact</div>
+    <h2 class="section-title">Parlons de votre cabinet</h2>
+    <p>Contactez-nous par téléphone, WhatsApp ou email. Nous revenons vers vous rapidement.</p>
+
+    <div class="contact-box">
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:contact@relansa.fr">contact@relansa.fr</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-label">Téléphone & WhatsApp</div>
+          <div class="contact-value"><a href="tel:0658464258" style="color:var(--gold);text-decoration:none">06 58 46 42 58</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-label">Zone d'intervention</div>
+          <div class="contact-value">France entière · 100% en ligne</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🔒</div>
+        <div>
+          <div class="contact-label">Engagement</div>
+          <div class="contact-value">Confidentiel · Conforme RGPD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Rel<span>ansa</span></div>
+  <p>© 2024 Relansa · Souade · Appui administratif pour professions libérales · France</p>
+  <p style="margin-top:8px">contact@relansa.fr · Mentions légales · Politique de confidentialité</p>
+</footer>
+
+
+<!-- WHATSAPP FLOTTANT -->
+<a href="https://wa.me/33658464258" target="_blank" style="
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  background: #25D366; color: white;
+  width: 58px; height: 58px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; text-decoration: none;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  transition: transform 0.2s;
+" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  💬
+</a>
+
+</body>
+</html>
